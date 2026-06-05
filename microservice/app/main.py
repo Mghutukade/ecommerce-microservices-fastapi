@@ -46,3 +46,13 @@ def create(product: Product):
 def test():
     return {"ping": redis.ping()}
 
+@app.delete("/products/{pk}")
+def delete(pk: str):
+    product = Product.get(pk)
+    if not product:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Product not found")
+        
+    # Delete the specific instance, not the whole class
+    product.delete() 
+    return {"message": f"Product {pk} deleted successfully"}
