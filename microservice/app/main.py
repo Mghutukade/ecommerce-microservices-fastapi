@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from redis_om import get_redis_connection 
 from redis_om import HashModel
 
-app = FastAPI()
+app = FastAPI()   # Created web server 
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,6 +13,7 @@ app.add_middleware(
 )
 
 
+#Redis for Databse 
 redis = get_redis_connection(
     host="horse-color-cook-49943.db.redis.io",
     port=14005,
@@ -28,7 +29,9 @@ class Product(HashModel, index=True):
     
     class Meta:
         database=redis 
-    
+ 
+
+#Root Endpoint                                                          
 @app.get("/")
 def home():
     return {"message": "Ecommerce Microservice Running"}
@@ -37,9 +40,10 @@ def home():
 def all():
     return Product.all_pks()
 
+#POST Endpoint
 @app.post("/products")
 def create(product: Product):
-    pk = product.save()
+    pk = product.save()  # Here before redis was empty and after sending this it stores Data permanently 
     return {"pk": pk}
 
 @app.get("/test")
